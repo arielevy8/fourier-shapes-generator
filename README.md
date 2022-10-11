@@ -14,8 +14,8 @@ The methods in this class allows for the generation of a shpae based on fourier 
     check.plot_shape()
 
     plt.show()
-![]("https://github.com/arielevy8/FourierShapesGenerator/blob/master/images/random%20shape%205.png")
- 
+
+ <img src="images/random%20shape%205.png" width="250" height="250">
 
 This code section plots a random shape that is based on 5 Fourier descriptors. Increasing the number of Fourier descriptors adds complexity to the shape.
 
@@ -29,6 +29,7 @@ You can also specify the value of each Fourier descriptor, as follows.
 
     plt.show()
 
+ <img src="images/descriptor_amp00000.png" width="250" height="250">
 or 
 
     check = FourierShape(num_descriptors = 5, descriptor_amp=[0,0,0,1,0])
@@ -38,7 +39,9 @@ or
     check.plot_shape()
 
     plt.show()
-    
+
+<img src="images/descriptor_amp00010.png" width="250" height="250">
+
 ### ShpaeSubspace class
 
 This class use 3 points on an N-dimentional shapes space in order to
