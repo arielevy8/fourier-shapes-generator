@@ -14,7 +14,7 @@ The methods in this class allows for the generation of a shpae based on fourier 
     check.plot_shape()
 
     plt.show()
-![randomly generated shape]("https://github.com/arielevy8/FourierShapesGenerator/blob/master/images/random%20shape%205.png")
+![]("https://github.com/arielevy8/FourierShapesGenerator/blob/master/images/random%20shape%205.png")
  
 
 This code section plots a random shape that is based on 5 Fourier descriptors. Increasing the number of Fourier descriptors adds complexity to the shape.
