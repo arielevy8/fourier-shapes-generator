@@ -7,6 +7,9 @@ This repository allows users to create novel shapes using Fourier descriptors, f
 ### FourierShape class
 The methods in this class allows for the generation of a shpae based on fourier descriptors.
 
+This code section plots a random shape that is based on 5 Fourier descriptors. Increasing the number of Fourier descriptors adds complexity to the shape.
+
+
     check = FourierShape(num_descriptors = 5)
 
     check.cumbend_to_points()
@@ -17,7 +20,6 @@ The methods in this class allows for the generation of a shpae based on fourier 
 
  <img src="images/random%20shape%205.png" width="250" height="250">
 
-This code section plots a random shape that is based on 5 Fourier descriptors. Increasing the number of Fourier descriptors adds complexity to the shape.
 
 You can also specify the value of each Fourier descriptor, as follows.
 
@@ -47,4 +49,12 @@ or
 This class use 3 points on an N-dimentional shapes space in order to
 define a 2-dimentional shape subspace, which useful for category learning tasks.
 This is done via the gram-schmidt process.
+
+The next code section randomly choose 3 points on 4-dimentional shapes space (4 descriptors), 
+and randomly generates 2-dim subspace. The shapes in the subspace are then plotted on a 9*9 grid.
+
+    sub = ShapeSubspace(4)
+    sub.generate_subspace()
+    sub.plot_shapes_grid(9)
     
+<img src="images/Figure_1.png" width="700" height="700">
