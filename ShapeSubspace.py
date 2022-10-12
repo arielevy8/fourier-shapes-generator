@@ -43,8 +43,15 @@ class ShapeSubspace (FourierShape):
             new.append(cur_vec)
         return new
 
-    def generate_subspace(self,point1=None,point2=None,point3=None):
+    def generate_subspace(self,factor,point1=None,point2=None,point3=None):
         """
+        This function generates a subspace that contain 3 points
+        using gram-schmidt orthomormalization. 
+        :param factor: float representing the size of the eventual orthogonal vector.
+        when increased, the edge shapes will be far from the base shape (point1)
+        :param point1, point 2, point3: lists with the length of 'num_descriptors', representing the
+        amplitude of each fourier descriptor for each of the 3 points. If not stated,
+        it is randomally determined. 
         """
         if not point1:
             point1 = np.random.uniform (-1,1,self.num_descriptors)
@@ -60,6 +67,8 @@ class ShapeSubspace (FourierShape):
         self.vec13 = point3-point1 # direction vector from point 3 to poin 1
         gs_coeffs = np.array(self.gs(np.array([self.vec12,self.vec13])))
         gs1,gs2 = gs_coeffs[0,:],gs_coeffs[1,:]
+        gs1 = factor*gs1/np.linalg.norm(gs1)
+        gs2 = factor*gs2/np.linalg.norm(gs2)
         self.end1 = self.point1+gs1
         self.end2 = self.point1+gs2
     
@@ -125,7 +134,7 @@ class ShapeSubspace (FourierShape):
         pass
 
 
-# sub = ShapeSubspace(4)
-# sub.generate_subspace()
-# sub.plot_shapes_grid(9)
-# sub.save_shapes_grid(9,r"C:\Users\ariel\Desktop\Github shapes generation\images")
+sub = ShapeSubspace(4)
+sub.generate_subspace(1.5)
+sub.plot_shapes_grid(9)
+
