@@ -54,7 +54,7 @@ The next code section randomly choose 3 points on 4-dimentional shapes space (4 
 and randomly generates 2-dim subspace. The shapes in the subspace are then plotted on a 9*9 grid.
 
     sub = ShapeSubspace(4)
-    sub.generate_subspace()
+    sub.generate_subspace(1.5)
     sub.plot_shapes_grid(9)
     
 <img src="images/Figure_1.png" width="700" height="700">
