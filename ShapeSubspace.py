@@ -1,6 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from pyparsing import col
+from sympy import true
 from FourierShape import FourierShape
+from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+
 
 class ShapeSubspace (FourierShape):
     """
@@ -69,14 +74,34 @@ class ShapeSubspace (FourierShape):
         gs1,gs2 = gs_coeffs[0,:],gs_coeffs[1,:]
         gs1 = factor*gs1/np.linalg.norm(gs1)
         gs2 = factor*gs2/np.linalg.norm(gs2)
+        self.gs1,self.gs2 = gs1,gs2
         self.end1 = self.point1+gs1
         self.end2 = self.point1+gs2
     
     def plot_subspace (self):
         """
+        This function demonstrates the location of thesubspace plane on the original
+        3d space.
+        Note that this function only work on 3d shapes space (i.e., when num_descriptors
+        equal to 3)
         """
-        pass
-    
+        if self.num_descriptors != 3:
+            raise ValueError ('Number of descriptors must be equal to 3 in order to plot subspace')
+        else:
+            fig = plt.figure()  
+            ax = plt.axes(projection='3d')
+            ax.plot([self.point1[0],self.end2[0]],[self.point1[1],self.end2[1]],[self.point1[2],self.end2[2]],label = 'dim1')
+            ax.plot([self.point1[0],self.end1[0]],[self.point1[1],self.end1[1]],[self.point1[2],self.end1[2]],label = 'dim2')
+            x = [self.point1[0],self.end1[0],self.end2[0]]
+            y = [self.point1[1],self.end1[1],self.end2[1]]
+            z = [self.point1[2],self.end1[2],self.end2[2]]
+            verts = list(zip(x,y,z))
+            coll = Poly3DCollection(verts)
+            coll.set_color('grey')
+            ax.add_collection3d(coll)
+            plt.legend()
+            plt.show()
+
     def plot_shapes_grid (self,num_levels):
         """
         This function creates a grid of shapes in the the subscpace
@@ -131,10 +156,51 @@ class ShapeSubspace (FourierShape):
 
     def sample_from_subspace (self, num_shapes,path, dim1_mean = None,dim1_sd = None
                                 ,dim2_mean = None, dim2_sd = None, plot_hist = True):
-        pass
+    
+        """
+        This function allows sampling from the 2 dimentional shape subspace 
+        defined by this class, using normal distribution with predefined
+        mean and sd, or rather uniform distribution. You can also sample from 
+        one dimention using normal dist and from the other dimention using uniform.
+        :param num shapes: number of shpaes you wish to create
+        :param path: directory to export shapes images
+        :params dim1_mean, dim1_sd, dim2_mean, dim2_sd: parameters for the normal distribution
+        from which shapes are sampled. if not stated for one or both dims, shapes
+        are sampled from the uniform distribution in this dim.
+        
+        """
+        dim1_list = []
+        dim2_list = []
+        for i in range(num_shapes):
+            if dim1_sd:
+                cur_loc_dim_1 = np.random.normal(dim1_mean,dim1_sd)
+            else:
+                cur_loc_dim_1 = np.random.uniform(0,1)
+            if dim2_sd:  
+                cur_loc_dim_2 = np.random.normal(dim2_mean,dim2_sd)
+            else:
+                cur_loc_dim_2 = np.random.uniform(0,1)
+            dim1_list.append(cur_loc_dim_1)
+            dim2_list.append(cur_loc_dim_2)
+            descriptors_dim_2 = self.point1+cur_loc_dim_2*self.gs2
+            descriptors_dim_1 = self.point1+cur_loc_dim_1*self.gs1
+            descriptors = (descriptors_dim_1+descriptors_dim_2)/2
+            descriptor_amp = self.short_to_full(descriptors)
+            descriptor_phase = np.zeros(len(self.point1)*2)
+            points = self.cumbend_to_points (descriptor_phase,descriptor_amp)
+            xt,yt = points[:,0],points[:,1]
+            plt.figure()
+            plt.plot (xt,yt)
+            plt.fill_between(xt,yt)
+            plt.savefig(path+'/shape_'+str(cur_loc_dim_1)+'_'+str(cur_loc_dim_2)+'.jpg')
+            plt.close()
+        if plot_hist:
+            plt.hist2d(dim2_list,dim1_list,bins=[np.linspace(min(dim2_list),max(dim2_list),50),np.linspace(min(dim1_list),max(dim1_list),50)])
+            plt.show()
 
 
-sub = ShapeSubspace(4)
-sub.generate_subspace(1.5)
-sub.plot_shapes_grid(9)
+# sub = ShapeSubspace(3)
+# sub.generate_subspace(1.5)
+# sub.plot_shapes_grid(9)
+# sub.plot_subspace()
 
