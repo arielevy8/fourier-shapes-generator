@@ -6,7 +6,6 @@ from FourierShape import FourierShape
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
-
 class ShapeSubspace (FourierShape):
     """
     This class use 3 points on an N-dimentional shapes space in order to
@@ -185,22 +184,17 @@ class ShapeSubspace (FourierShape):
             descriptors_dim_2 = self.point1+cur_loc_dim_2*self.gs2
             descriptors_dim_1 = self.point1+cur_loc_dim_1*self.gs1
             descriptors = (descriptors_dim_1+descriptors_dim_2)/2
-            descriptor_amp = self.short_to_full(descriptors)
-            descriptor_phase = np.zeros(len(self.point1)*2)
-            points = self.cumbend_to_points (descriptor_phase,descriptor_amp)
-            xt,yt = points[:,0],points[:,1]
+            self.descriptor_amp = self.short_to_full(descriptors)
+            self.cumbend_to_points()
+            xt,yt = self.points[:,0],self.points[:,1]
             plt.figure()
             plt.plot (xt,yt)
             plt.fill_between(xt,yt)
-            plt.savefig(path+'/shape_'+str(cur_loc_dim_1)+'_'+str(cur_loc_dim_2)+'.jpg')
+            plt.savefig(path+'/shape_'+str(round(cur_loc_dim_1,3))+'_'+str(round(cur_loc_dim_2,3))+'.jpg')
             plt.close()
         if plot_hist:
-            plt.hist2d(dim2_list,dim1_list,bins=[np.linspace(min(dim2_list),max(dim2_list),50),np.linspace(min(dim1_list),max(dim1_list),50)])
+            plt.hist2d(dim2_list,dim1_list,bins=[np.linspace(min(dim2_list),max(dim2_list),num_shapes//10),
+                np.linspace(min(dim1_list),max(dim1_list),num_shapes//10)])
             plt.show()
 
-
-# sub = ShapeSubspace(3)
-# sub.generate_subspace(1.5)
-# sub.plot_shapes_grid(9)
-# sub.plot_subspace()
 
