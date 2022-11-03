@@ -64,7 +64,7 @@ and randomly generates 2-dim subspace. The shapes in the subspace are then plott
 When the original shape space dimention (num_descriptors) is 3, 
 you can also plot the subspace relative to the original shape space:
     sub.plot_subspace()
-<img src="images/Figure_2.png" width="400" height="550">
+<img src="images/Figure_2.png" width="550" height="400">
 
 
 The next code line generates 200 shapes, sampled from the 2d subspace by normal
