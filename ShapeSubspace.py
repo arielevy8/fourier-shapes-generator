@@ -1,7 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from pyparsing import col
-from sympy import true
 from FourierShape import FourierShape
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
@@ -196,5 +194,3 @@ class ShapeSubspace (FourierShape):
             plt.hist2d(dim2_list,dim1_list,bins=[np.linspace(min(dim2_list),max(dim2_list),num_shapes//10),
                 np.linspace(min(dim1_list),max(dim1_list),num_shapes//10)])
             plt.show()
-
-
