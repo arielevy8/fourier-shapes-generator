@@ -59,12 +59,12 @@ and randomly generates 2-dim subspace. The shapes in the subspace are then plott
     sub.generate_subspace(1.5)
     sub.plot_shapes_grid(9)
     
-<img src="images/Figure_1.png" width="700" height="700">
+<img src="images/Figure_1.png" width="500" height="500">
 
 When the original shape space dimention (num_descriptors) is 3, 
 you can also plot the subspace relative to the original shape space:
     sub.plot_subspace()
-<img src="images/Figure_2.png" width="700" height="700">
+<img src="images/Figure_2.png" width="400" height="550">
 
 
 The next code line generates 200 shapes, sampled from the 2d subspace by normal
