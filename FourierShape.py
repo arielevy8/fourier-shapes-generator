@@ -80,4 +80,4 @@ class FourierShape(object):
 # check.cumbend_to_points()
 # check.plot_shape()
 # plt.show()
-check = FourierShape()
+
