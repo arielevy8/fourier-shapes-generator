@@ -19,31 +19,26 @@ class FourierShape(object):
         all phases are equal to 0
         """
         self.num_descriptors = num_descriptors
+
         if not descriptor_phase:
             descriptor_phase = np.zeros(num_descriptors)
-        else:
-            if len(descriptor_phase) != num_descriptors:
-                raise ValueError('length of the descriptor_phase list should' +
-                                 'be equal to the number of the descriptors')
+        elif len(descriptor_phase) != num_descriptors:
+            raise ValueError('length of the descriptor_phase list should be equal to the number of the descriptors')
         descriptor_phase = self.short_to_full(descriptor_phase)
         self.descriptor_phase = descriptor_phase
+
         if not descriptor_amp:
             descriptor_amp = np.random.uniform(-1, 1, num_descriptors)
-        else:
-            if len(descriptor_amp) != num_descriptors:
-                raise ValueError('length of the descriptor_amp list should' +
-                                 'be equal to the number of the descriptors')
+        elif len(descriptor_amp) != num_descriptors:
+            raise ValueError('length of the descriptor_amp list should be equal to the number of the descriptors')
         descriptor_amp = self.short_to_full(descriptor_amp)
         self.descriptor_amp = descriptor_amp
 
     def full_to_short(self, full):
-        return [full[i] for i in [0, 2, 4, 6]]
+        return full[0, 2, 4, 6]
 
     def short_to_full(self, short):
-        list1 = [[i, 0] for i in short]
-        array1 = np.array(list1)
-        array1 = array1.flatten()
-        return (list(array1))
+        return np.ravel(list(zip(short, [0] * len(short))))
 
     def cumbend(self, t):
         """
@@ -55,7 +50,7 @@ class FourierShape(object):
             amp = self.descriptor_amp[freq]
             phase = (self.descriptor_phase[freq] / 360) * 2 * np.pi
             theta += amp * np.cos(freq * t - phase)
-        return (theta)
+        return theta
 
     def cumbend_to_points(self, steps=1000):
         """
@@ -73,15 +68,6 @@ class FourierShape(object):
             cur_point = following_point
         self.points = np.array(points)
 
-    def plot_shape(self):
-        plt.plot(self.points[:, 0], self.points[:, 1])
-        plt.fill_between(self.points[:, 0], self.points[:, 1])
+    def plot_shape(self, color=None):
+        plt.fill_between(self.points[:, 0], self.points[:, 1], color=color, edgecolor="none")
         plt.axis('off')
-
-    # check = FourierShape(7,[0,0,0,0,0,0,0])
-
-
-# check.cumbend_to_points()
-# check.plot_shape()
-# plt.show()
-check = FourierShape()
