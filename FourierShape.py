@@ -58,9 +58,8 @@ class FourierShape(object):
 
     def cumbend_to_points(self,steps = 1000):
         """
-        This method uses the descriptors to calculate the point set, based
-        on the process described by __
-        :param steps: Number of time-points in the 
+        This method uses the descriptors to calculate the point set.
+        :param steps: Number of points used to create the shape. If not stated, equals to 0
         """
         cur_point = complex(real=0,imag=0)
         points = []
