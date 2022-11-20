@@ -67,7 +67,10 @@ class FourierShape(object):
             following_point = cur_point + [np.cos(bend_angle), np.sin(bend_angle)]
             cur_point = following_point
 
-    def plot_shape(self, color=None):
-        plt.fill_between(*self.points.T, color=color, edgecolor="none")
+    def plot_shape(self, color=None, edge_color=None):
+        plt.fill_between(*self.points.T, color=color, edgecolor=None)
+        if edge_color:
+            # using the edgecolor argument in fill_between created an artifact of an horizontal line in the image
+            plt.plot(*self.points.T, color=edge_color)
         plt.axis('off')
         plt.gca().set_aspect('equal')
