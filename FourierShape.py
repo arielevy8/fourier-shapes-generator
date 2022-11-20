@@ -58,13 +58,13 @@ class FourierShape(object):
         :param n_points: number of points to find.
         """
         self.points = np.empty((n_points, 2))
-        cur_point = complex(real=0, imag=0)
+        cur_point = np.array([0, 0])
         time_points = np.linspace(0, 2 * np.pi, n_points)
 
         for i, t in enumerate(time_points):
-            self.points[i] = np.real(cur_point), np.imag(cur_point)
+            self.points[i] = cur_point
             bend_angle = self.cumbend(t)
-            following_point = cur_point + complex(real=np.cos(bend_angle), imag=np.sin(bend_angle))
+            following_point = cur_point + [np.cos(bend_angle), np.sin(bend_angle)]
             cur_point = following_point
 
     def plot_shape(self, color=None):
