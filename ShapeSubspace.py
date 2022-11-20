@@ -12,14 +12,14 @@ class ShapeSubspace(FourierShape):
     This is done via the gram-schmidt process.
     """
 
-    def __init__(self, num_descriptors):
+    def __init__(self, n_descriptors):
         """
         :param num_descriptor: The number of fourier descriptors used to create
         the shape. Increasing this number adds complexity to the shpae.
         """
-        super().__init__(num_descriptors)
-        self.num_descriptors = num_descriptors
-        self.descriptor_phase = np.zeros(num_descriptors)
+        super().__init__(n_descriptors)
+        self.num_descriptors = n_descriptors
+        self.descriptor_phase = np.zeros(n_descriptors)
         self.descriptor_phase = self.short_to_full(self.descriptor_phase)
 
     def gs_cofficient(self, v1, v2):
