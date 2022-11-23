@@ -68,9 +68,9 @@ you can also plot the subspace relative to the original shape space:
 
 <img src="images/Figure_2.png" width="550" height="400">
 
-
-The next code line generates 200 shapes, sampled from the 2d subspace by normal
-distribution mean=0.5 and sd=0.25 in the first dimention, and uniform distribution in the irrelevant
+After you have defined a shape subspace, you can also sample shapes from this subspace based on a normal or a uniform distribution.
+The next code section generates 200 shapes, sampled from the 2d subspace by normal
+distribution mean=0.5 and sd=0.25 in the first dimention, and uniform distribution in the second
 dimention.
 
     sub.sample_from_subspace(200,your_directory,1,0.5,plot_hist=True)
