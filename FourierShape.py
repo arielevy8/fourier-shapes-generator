@@ -67,6 +67,7 @@ class FourierShape(object):
             following_point = cur_point + [np.cos(bend_angle), np.sin(bend_angle)]
             cur_point = following_point
 
+
     def plot_shape(self, color=None, edge_color=None):
         plt.fill_between(*self.points.T, color=color, edgecolor=None)
         if edge_color:
@@ -74,3 +75,9 @@ class FourierShape(object):
             plt.plot(*self.points.T, color=edge_color)
         plt.axis('off')
         plt.gca().set_aspect('equal')
+
+# check = FourierShape(7,[0,0,0,0,0,0,0])
+# check.cumbend_to_points()
+# check.plot_shape()
+# plt.show()
+
