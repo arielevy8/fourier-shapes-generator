@@ -1,80 +1,80 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+def full_to_short(full):
+    return full[::2]
+
+
+def short_to_full(short):
+    """
+    Based on: https://stackoverflow.com/a/5347492
+    """
+    full = np.zeros(2 * len(short), dtype=short.dtype)
+    full[0::2] = short
+    return full
+
+
 class FourierShape(object):
     """
-    This class contain methods to generate a shpae based on a set
-     of N descriptors.
+    A class to generate a shape based on a set of Fourier descriptors.
     """
-    def __init__(self,num_descriptors,descriptor_amp = None,descriptor_phase = None):
-        """
-        :param num_descriptor: The number of fourier descriptors used to create
-        the shape. Increasing this number ads complexity to the shpae.
-        :param descriptor_amp: a list with the length of 'num_descriptors', representing the
-        amplitude of each fourier descriptor. If not stated,
-        it is randomally determined.
-        :param descriptor_phase: Phase of each fourier descriptor. If not stated, 
-        all phases are equal to 0
-        """
-        self.num_descriptors = num_descriptors
-        if not descriptor_phase:
-            descriptor_phase = np.zeros (num_descriptors)
-        else:
-            if len(descriptor_phase) != num_descriptors:
-                raise ValueError ('length of the descriptor_phase list should'+
-                'be equal to the number of the descriptors')
-        descriptor_phase = self.short_to_full(descriptor_phase)    
-        self.descriptor_phase = descriptor_phase
-        if not descriptor_amp:
-            descriptor_amp = np.random.uniform(-1,1,num_descriptors)
-        else:
-            if len(descriptor_amp) != num_descriptors:
-                raise ValueError ('length of the descriptor_amp list should'+
-                'be equal to the number of the descriptors')
-        descriptor_amp = self.short_to_full(descriptor_amp)    
-        self.descriptor_amp = descriptor_amp       
 
-    
-    def full_to_short (self,full):
-        return [full[i] for i in [0,2,4,6]]
-    
-    def short_to_full(self,short):
-        list1 = [[i,0] for i in short]
-        array1 = np.array(list1)
-        array1 = array1.flatten()
-        return(list(array1))
+    def __init__(self, n_descriptors, descriptor_amp=None, descriptor_phase=None):
+        """
+        :param n_descriptors: The number of fourier descriptors used to create the shape.
+            Increasing this number adds complexity to the shape.
+        :param descriptor_amp: amplitude of each fourier descriptor. If not stated, it is randomly determined.
+        :param descriptor_phase: phase of each fourier descriptor. If not stated, all phases are set to 0.
+        """
+        self.n_descriptors = n_descriptors
+
+        if descriptor_phase is None:
+            descriptor_phase = np.zeros(n_descriptors)
+        elif len(descriptor_phase) != n_descriptors:
+            raise ValueError('length of descriptor_phase does not match the number of descriptors')
+        self.descriptor_phase = short_to_full(descriptor_phase)
+
+        if descriptor_amp is None:
+            descriptor_amp = np.random.uniform(-1, 1, n_descriptors)
+        elif len(descriptor_amp) != n_descriptors:
+            raise ValueError('length of descriptor_amp does not match the number of descriptors')
+        self.descriptor_amp = short_to_full(descriptor_amp)
+
+        self.points = None
 
     def cumbend(self, t):
         """
-        This method calculates the next theta angle for 
-        the timepoint t.
+        Calculates the next theta angle for the timepoint t.
         """
-        theta = -t
-        for freq in range(len(self.descriptor_amp)):
-            amp = self.descriptor_amp[freq]
-            phase = (self.descriptor_phase[freq]/360)*2*np.pi
-            theta += amp*np.cos(freq*t - phase)
-        return(theta)
+        freqs = np.arange(len(self.descriptor_amp))
+        phases = np.pi * self.descriptor_phase / 180
+        theta = -t + np.sum(self.descriptor_amp * np.cos(freqs * t - phases))
+        return theta
 
-    def cumbend_to_points(self,steps = 1000):
+    def cumbend_to_points(self, n_points=1000):
         """
-        This method uses the descriptors to calculate the point set.
-        :param steps: Number of points used to create the shape. If not stated, equals to 0
+        Finds equally spaced points of the shape's perimeter, based on the process described by __.
+        :param n_points: number of points to find.
         """
-        cur_point = complex(real=0,imag=0)
-        points = []
-        for t in np.linspace(0,2*np.pi,steps):
+        self.points = np.empty((n_points, 2))
+        cur_point = np.array([0, 0])
+        time_points = np.linspace(0, 2 * np.pi, n_points)
+
+        for i, t in enumerate(time_points):
+            self.points[i] = cur_point
             bend_angle = self.cumbend(t)
-            following_point = cur_point+complex(real = np.cos(bend_angle),imag=np.sin(bend_angle))
-            mini_list = [np.real(cur_point),np.imag(cur_point)]
-            points.append(mini_list)
+            following_point = cur_point + [np.cos(bend_angle), np.sin(bend_angle)]
             cur_point = following_point
-        self.points = np.array(points)
 
-    def plot_shape (self):
-        plt.plot(self.points[:,0],self.points[:,1])
-        plt.fill_between(self.points[:,0],self.points[:,1])     
-        plt.axis('off')  
+
+    def plot_shape(self, color=None, edge_color=None):
+        plt.fill_between(*self.points.T, color=color, edgecolor=None)
+        if edge_color:
+            # using the edgecolor argument in fill_between created an artifact of an horizontal line in the image
+            plt.plot(*self.points.T, color=edge_color)
+        plt.axis('off')
+        plt.gca().set_aspect('equal')
 
 # check = FourierShape(7,[0,0,0,0,0,0,0])
 # check.cumbend_to_points()
