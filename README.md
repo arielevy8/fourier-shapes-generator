@@ -59,7 +59,7 @@ and randomly generates 2-dim subspace. The shapes in the subspace are then plott
     sub.generate_subspace(1.5)
     sub.plot_shapes_grid(9)
     
-<img src="images/Figure_1.png" width="500" height="500">
+<img src="images/stimuli grid seed 1235 factor 2.5.png" width="500" height="500">
 
 When the original shape space dimention (num_descriptors) is 3, 
 you can also plot the subspace relative to the original shape space:
