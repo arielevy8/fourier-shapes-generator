@@ -12,7 +12,7 @@ This code section plots a random shape that is based on 5 Fourier descriptors. I
 
     check = FourierShape(num_descriptors = 5)
 
-    check.cumbend_to_points()
+    check.descriptors_to_shape()
 
     check.plot_shape()
 
@@ -25,7 +25,7 @@ You can also specify the value of each Fourier descriptor, as follows.
 
     check = FourierShape(num_descriptors = 5, descriptor_amp=[0,0,0,0,0])
 
-    check.cumbend_to_points()
+    check.descriptors_to_shape()
 
     check.plot_shape()
 
@@ -36,7 +36,7 @@ or
 
     check = FourierShape(num_descriptors = 5, descriptor_amp=[0,0,0,1,0])
 
-    check.cumbend_to_points()
+    check.descriptors_to_shape()
 
     check.plot_shape()
 
