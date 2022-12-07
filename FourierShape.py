@@ -2,19 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def full_to_short(full):
-    return full[::2]
-
-
-def short_to_full(short):
-    """
-    Based on: https://stackoverflow.com/a/5347492
-    """
-    full = np.zeros(2 * len(short), dtype=short.dtype)
-    full[0::2] = short
-    return full
-
-
 class FourierShape(object):
     """
     A class to generate a shape based on a set of Fourier descriptors.
@@ -33,17 +20,29 @@ class FourierShape(object):
             descriptor_phase = np.zeros(n_descriptors)
         elif len(descriptor_phase) != n_descriptors:
             raise ValueError('length of descriptor_phase does not match the number of descriptors')
-        self.descriptor_phase = short_to_full(descriptor_phase)
+        self.descriptor_phase = self.short_to_full(descriptor_phase)
 
         if descriptor_amp is None:
             descriptor_amp = np.random.uniform(-1, 1, n_descriptors)
         elif len(descriptor_amp) != n_descriptors:
             raise ValueError('length of descriptor_amp does not match the number of descriptors')
-        self.descriptor_amp = short_to_full(descriptor_amp)
+        self.descriptor_amp = self.short_to_full(descriptor_amp)
 
         self.points = None
+    
+    def full_to_short(self, full):
+        return full[::2]
 
-    def cumbend(self, t):
+
+    def short_to_full(self, short):
+        """
+        Based on: https://stackoverflow.com/a/5347492
+        """
+        full = np.zeros(2 * len(short))#, dtype=short.dtype)
+        full[0::2] = short
+        return full
+    
+    def get_theta(self, t):
         """
         Calculates the next theta angle for the timepoint t.
         """
@@ -52,10 +51,12 @@ class FourierShape(object):
         theta = -t + np.sum(self.descriptor_amp * np.cos(freqs * t - phases))
         return theta
 
-    def cumbend_to_points(self, n_points=1000):
+
+
+    def descriptors_to_shape(self, n_points=1000):
         """
         Finds equally spaced points of the shape's perimeter, based on the process described by __.
-        :param n_points: number of points to find.
+        :param n_points: number of points comprising the shape.
         """
         self.points = np.empty((n_points, 2))
         cur_point = np.array([0, 0])
@@ -63,7 +64,7 @@ class FourierShape(object):
 
         for i, t in enumerate(time_points):
             self.points[i] = cur_point
-            bend_angle = self.cumbend(t)
+            bend_angle = self.get_theta(t)
             following_point = cur_point + [np.cos(bend_angle), np.sin(bend_angle)]
             cur_point = following_point
 
@@ -76,8 +77,8 @@ class FourierShape(object):
         plt.axis('off')
         plt.gca().set_aspect('equal')
 
-# check = FourierShape(7,[0,0,0,0,0,0,0])
-# check.cumbend_to_points()
+# check = FourierShape(4,[0,0,0,0])
+# check.descriptors_to_shape()
 # check.plot_shape()
 # plt.show()
 

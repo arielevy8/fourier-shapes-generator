@@ -91,15 +91,16 @@ class ShapeSubspace(FourierShape):
             fig = plt.figure()
             ax = plt.axes(projection='3d')
             ax.plot([self.point1[0], self.end2[0]], [self.point1[1], self.end2[1]], [self.point1[2], self.end2[2]],
-                    label='dim1')
+                    label='dim1',linewidth = 4)
             ax.plot([self.point1[0], self.end1[0]], [self.point1[1], self.end1[1]], [self.point1[2], self.end1[2]],
-                    label='dim2')
+                    label='dim2',linewidth = 4)
             x = [self.point1[0], self.end1[0], self.end2[0]]
             y = [self.point1[1], self.end1[1], self.end2[1]]
             z = [self.point1[2], self.end1[2], self.end2[2]]
             verts = list(zip(x, y, z))
             coll = Poly3DCollection(verts)
             coll.set_color('grey')
+            coll.set_alpha(0.5)
             ax.add_collection3d(coll)
             plt.legend()
             plt.show()
@@ -120,7 +121,7 @@ class ShapeSubspace(FourierShape):
             for dim_2 in range(second_dim.shape[0]):
                 coeffs = (first_dim[dim_1] + second_dim[dim_2]) / 2
                 self.descriptor_amp = self.short_to_full(coeffs)
-                self.cumbend_to_points()
+                self.descriptors_to_shape()
                 xt, yt = self.points[:, 0], self.points[:, 1]
                 ax = plt.subplot(first_dim.shape[0], second_dim.shape[0], counter + 1)
                 ax.plot(xt, yt)
@@ -148,7 +149,7 @@ class ShapeSubspace(FourierShape):
             for dim_2 in range(second_dim.shape[0]):
                 coeffs = (first_dim[dim_1] + second_dim[dim_2]) / 2
                 self.descriptor_amp = self.short_to_full(coeffs)
-                self.cumbend_to_points()
+                self.descriptors_to_shape()
                 xt, yt = self.points[:, 0], self.points[:, 1]
                 plt.figure()
                 plt.plot(xt, yt)
@@ -192,7 +193,7 @@ class ShapeSubspace(FourierShape):
             descriptors_dim_1 = self.point1 + cur_loc_dim_1 * self.gs1
             descriptors = (descriptors_dim_1 + descriptors_dim_2) / 2
             self.descriptor_amp = self.short_to_full(descriptors)
-            self.cumbend_to_points()
+            self.descriptors_to_shape()
             xt, yt = self.points[:, 0], self.points[:, 1]
             plt.figure()
             plt.plot(xt, yt)
@@ -203,3 +204,9 @@ class ShapeSubspace(FourierShape):
             plt.hist2d(dim2_list, dim1_list, bins=[np.linspace(min(dim2_list), max(dim2_list), num_shapes // 10),
                                                    np.linspace(min(dim1_list), max(dim1_list), num_shapes // 10)])
             plt.show()
+
+
+sub = ShapeSubspace(3)
+sub.generate_subspace(1)
+#sub.plot_shapes_grid(9)
+sub.plot_subspace()
