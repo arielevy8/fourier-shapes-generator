@@ -206,7 +206,7 @@ class ShapeSubspace(FourierShape):
             plt.show()
 
 
-sub = ShapeSubspace(3)
-sub.generate_subspace(1)
-#sub.plot_shapes_grid(9)
-sub.plot_subspace()
+# sub = ShapeSubspace(3)
+# sub.generate_subspace(1)
+# sub.plot_shapes_grid(9)
+# sub.plot_subspace()
