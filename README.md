@@ -18,10 +18,10 @@ This code section plots a random shape that is based on 5 Fourier descriptors. I
 
     plt.show()
 
- <img src="images/random%20shape%205.png" width="250" height="250">
+ <img src="images/random%20shape%205.png" width="200" height="200">
 
 
-You can also specify the value of each Fourier descriptor, as follows.
+You can also specify the value of each Fourier descriptor by modifying the 'descriptor_amp' variable, as follows:
 
     check = FourierShape(num_descriptors = 5, descriptor_amp=[0,0,0,0,0])
 
@@ -31,8 +31,8 @@ You can also specify the value of each Fourier descriptor, as follows.
 
     plt.show()
 
- <img src="images/descriptor_amp00000.png" width="250" height="250">
-or 
+ <img src="images/descriptor_amp00000.png" width="200" height="200">
+or: 
 
     check = FourierShape(num_descriptors = 5, descriptor_amp=[0,0,0,1,0])
 
@@ -42,7 +42,7 @@ or
 
     plt.show()
 
-<img src="images/descriptor_amp00010.png" width="250" height="250">
+<img src="images/descriptor_amp00010.png" width="200" height="200">
 
 ### ShpaeSubspace class
 
@@ -52,14 +52,14 @@ This is done via the gram-schmidt process. In addition, the class enables system
 sampling from the subspace via normal distribution or uniform distribution (or a mix of the two), 
 In order to simulate categories.
 
-The next code section randomly chooses 3 points on 4-dimensional shapes space (4 descriptors), 
+The next code section randomly chooses 3 points on 4-dimensional shapes space (4 descriptors) 
 and randomly generates a 2-dim subspace. The shapes in the subspace are then plotted on a 9*9 grid.
 
     sub = ShapeSubspace(4)
     sub.generate_subspace(1.5)
     sub.plot_shapes_grid(9)
     
-<img src="images/stimuli grid seed 1235 factor 2.5.png" width="500" height="500">
+<img src="images/stimuli grid seed 1235 factor 2.5.png" width="600" height="600">
 
 When the original shape space dimension (num_descriptors) is 3, 
 You can also plot the subspace relative to the original shape space:
