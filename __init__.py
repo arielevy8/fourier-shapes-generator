@@ -1,2 +1,2 @@
-from FourierShape import FourierShape
-from ShapeSubspace import ShapeSubspace
+from .FourierShape import FourierShape
+from .ShapeSubspace import ShapeSubspace
