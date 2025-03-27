@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from FourierShape import FourierShape
+from .FourierShape import FourierShape
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
@@ -12,15 +12,17 @@ class ShapeSubspace(FourierShape):
     This is done via the gram-schmidt process.
     """
 
-    def __init__(self, n_descriptors):
+    def __init__(self, n_descriptors, phase_offset=0, amp_bound=(-0.8,0.8)):
         """
         :param num_descriptor: The number of fourier descriptors used to create
         the shape. Increasing this number adds complexity to the shpae.
+        :param descriptor_phase: the phase of each fourier descriptor.
+        :param phase_offset: a general phase offset for all fourier descriptors.
+        :param amp_bound: the bounds of the amplitude of each fourier descriptor.
         """
-        super().__init__(n_descriptors)
+        super().__init__(n_descriptors, phase_offset=phase_offset, amp_bound=amp_bound)
+        # Store n_descriptors for use in other methods
         self.num_descriptors = n_descriptors
-        self.descriptor_phase = np.zeros(n_descriptors)
-        self.descriptor_phase = self.short_to_full(self.descriptor_phase)
 
     def gs_cofficient(self, v1, v2):
         return np.dot(v2, v1) / np.dot(v1, v1)
@@ -206,7 +208,9 @@ class ShapeSubspace(FourierShape):
             plt.show()
 
 
-# sub = ShapeSubspace(3)
-# sub.generate_subspace(1)
-# sub.plot_shapes_grid(9)
-# sub.plot_subspace()
+
+# if __name__ == "__main__":
+#     sub = ShapeSubspace(5,phase_offset=80,amp_bound=(-0.8,0.8))
+#     sub.generate_subspace(2.5)
+#     sub.plot_shapes_grid(8)
+#     #sub.plot_subspace()
