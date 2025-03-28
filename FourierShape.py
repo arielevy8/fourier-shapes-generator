@@ -19,10 +19,12 @@ class FourierShape(object):
         self.n_descriptors = n_descriptors
 
         if descriptor_phase is None:
-            descriptor_phase = np.ones(n_descriptors)*phase_offset
+            descriptor_phase = np.zeros(n_descriptors)
+            descriptor_phase[0] = phase_offset
         elif len(descriptor_phase) != n_descriptors:
             raise ValueError('length of descriptor_phase does not match the number of descriptors')
         self.descriptor_phase = self.short_to_full(descriptor_phase)
+        self.descriptor_phase[1] = phase_offset
 
         if descriptor_amp is None:
             descriptor_amp = np.random.uniform(amp_bound[0], amp_bound[1], n_descriptors)
@@ -34,15 +36,6 @@ class FourierShape(object):
     
     def full_to_short(self, full):
         return full[::2]
-
-
-    def short_to_full(self, short):
-        """
-        Based on: https://stackoverflow.com/a/5347492
-        """
-        full = np.zeros(2 * len(short))#, dtype=short.dtype)
-        full[0::2] = short
-        return full
     
     def short_to_full(self, short):
         """
