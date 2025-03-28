@@ -25,34 +25,44 @@ class ShapeSubspace(FourierShape):
         self.num_descriptors = n_descriptors
 
     def gs_cofficient(self, v1, v2):
+        """
+        Calculate the Gram-Schmidt coefficient for projection
+        """
         return np.dot(v2, v1) / np.dot(v1, v1)
 
     def multiply(self, cofficient, v):
         return map((lambda x: x * cofficient), v)
 
     def proj(self, v1, v2):
-        return self.multiply(self.gs_cofficient(v1, v2), v1)
+        """
+        Project v2 onto v1
+        """
+        return self.gs_cofficient(v1, v2) * v1
 
     def gs(self, old):
         """
-        This method implements gram-schmidt orthonormalizatin to create
+        This method implements Gram-Schmidt orthonormalization to create
         subspace.
         :param old: Array of 2 direction vectors from the point 1 to points 2 and 3
         returns: new, an array of orthogonal vectors to span the subspace
         """
         new = []
         for i in range(len(old)):
-            cur_vec = old[i]
+            cur_vec = old[i].copy()
             for inY in new:
-                proj_vec = self.proj(inY, old[i])
-                cur_vec = list(map(lambda x, y: x - y, cur_vec, proj_vec))
+                proj_vec = self.proj(inY, cur_vec)
+                cur_vec = cur_vec - proj_vec
+            # Normalize the vector
+            norm = np.linalg.norm(cur_vec)
+            if norm > 0:
+                cur_vec = cur_vec / norm
             new.append(cur_vec)
-        return new
+        return np.array(new)
 
-    def generate_subspace(self, factor, point1=None, point2=None, point3=None):
+    def generate_subspace(self, factor1=1, factor2=None, point1=None, point2=None, point3=None):
         """
         This function generates a subspace that contain 3 points
-        using gram-schmidt orthomormalization. 
+        using Gram-Schmidt orthonormalization. 
         :param factor: float representing the size of the eventual orthogonal vector.
         when increased, the edge shapes will be far from the base shape (point1)
         :param point1, point 2, point3: lists with the length of 'num_descriptors', representing the
@@ -69,13 +79,27 @@ class ShapeSubspace(FourierShape):
                 point3) != self.num_descriptors:
             raise ValueError('length of the points list should' +
                              'be equal to the number of the descriptors')
+        
+        # Convert to numpy arrays if they aren't already
+        point1 = np.array(point1)
+        point2 = np.array(point2)
+        point3 = np.array(point3)
+        
         self.point1 = point1
         self.vec12 = point2 - point1  # direction vector from point 1 to point 2
-        self.vec13 = point3 - point1  # direction vector from point 3 to poin 1
-        gs_coeffs = np.array(self.gs(np.array([self.vec12, self.vec13])))
+        self.vec13 = point3 - point1  # direction vector from point 3 to point 1
+        
+        # Apply Gram-Schmidt orthonormalization
+        gs_coeffs = self.gs(np.array([self.vec12, self.vec13]))
         gs1, gs2 = gs_coeffs[0, :], gs_coeffs[1, :]
-        gs1 = factor * gs1 / np.linalg.norm(gs1)
-        gs2 = factor * gs2 / np.linalg.norm(gs2)
+        
+        # Scale the orthogonal vectors by the factors
+        gs1 = factor1 * gs1
+        if factor2 is not None:
+            gs2 = factor2 * gs2
+        else:
+            gs2 = factor1 * gs2
+        
         self.gs1, self.gs2 = gs1, gs2
         self.end1 = self.point1 + gs1
         self.end2 = self.point1 + gs2
@@ -209,8 +233,23 @@ class ShapeSubspace(FourierShape):
 
 
 
-# if __name__ == "__main__":
-#     sub = ShapeSubspace(5,phase_offset=80,amp_bound=(-0.8,0.8))
-#     sub.generate_subspace(2.5)
-#     sub.plot_shapes_grid(8)
-#     #sub.plot_subspace()
+if __name__ == "__main__":
+    sub = ShapeSubspace(4,phase_offset=65,amp_bound=(-0.9,0.9))
+    sub.generate_subspace(2.5)
+    sub.plot_shapes_grid(8)
+    #sub.plot_subspace()
+    # Check orthogonality
+    dot_product = np.dot(sub.gs1, sub.gs2)
+    print(f"Dot product between orthogonal vectors: {dot_product}")  # Should be very close to 0
+    # Check dot product between subspace vectors
+    v1 = sub.end1 - sub.point1  # Vector from point1 to end1 
+    v2 = sub.end2 - sub.point1  # Vector from point1 to end2
+    subspace_dot = np.dot(v1, v2)
+    print(f"\nDot product between subspace vectors: {subspace_dot}")
+    
+    # Also check angles
+    v1_norm = np.linalg.norm(v1)
+    v2_norm = np.linalg.norm(v2)
+    cos_angle = subspace_dot / (v1_norm * v2_norm)
+    angle = np.arccos(cos_angle) * 180 / np.pi
+    print(f"Angle between subspace vectors: {angle:.2f} degrees")
